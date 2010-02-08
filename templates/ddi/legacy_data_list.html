@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<table>
+	<tr>
+		<th>Key</th>
+		<th>Value</th>
+	</tr>
+	{% for i in object_list %}
+	<tr>
+		<td>{{ i.legacy_field }}</td>
+		<td>{{ i.legacy_value }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+

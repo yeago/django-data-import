@@ -1,0 +1,9 @@
+import sys
+sys.path.append('/path/to/your/project_dir')
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings'
+
+from project.dummy.migrations import * 
+
+x = CustomerImport	# Conducts prep work
+x.import()	# Performs the mirroring from old to new db
