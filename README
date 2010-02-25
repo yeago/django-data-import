@@ -1,9 +1,19 @@
-import sys
-sys.path.append('/path/to/your/project_dir')
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings'
+BASIC STEPS:
 
-from project.dummy.migrations import * 
+1) Create a new project (or at least a clean project database)
 
-x = CustomerImport	# Conducts prep work
-x.import()	# Performs the mirroring from old to new db
+2) Create a 'conversion' directory and inside it an __init__.py
+
+3) Copy your legacy tables into your new database. Delete any unwanted
+tables and fields and conduct any purely SQL prep-work to simplify 
+things later on
+
+4) Output the results of inspectdb to conversion/legacy_models.py:
+
+>>>python manage.py inspectdb > conversion/legacy_models.py
+
+5) Create conversion/imports.py and establish your conversion objects
+
+6) Run your conversions:
+
+>>>python manage.py convert ClassName
