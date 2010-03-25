@@ -6,6 +6,13 @@ from sets import Set
 
 from django.conf import settings
 
+try:
+    import progressbar
+    PROGRESS_BAR = True
+except ImportError:
+    PROGRESS_BAR = False
+
+
 from django.core.paginator import Paginator
 from django.db.models import get_model
 from django.utils.datastructures import SortedDict
@@ -444,9 +451,17 @@ class BaseImport(ImportBaseClass):
         we don't fill up memory
         """
         paginator = Paginator(self.Meta.queryset,1000)
+        pbar = None
+        if PROGRESS_BAR:
+            pbar = progressbar.ProgressBar(maxval=paginator.num_pages * 1000)
+            cnt = 0
+            
         for i in range(0,paginator.num_pages):
             reset_queries()
             for slave_record in paginator.page(i + 1).object_list:
+                if PROGRESS_BAR:
+                    pbar.update(cnt+1)
+                    cnt += 1
                 """
                 Have we already processed this record in another loop? If so, skip!
                 """
@@ -495,7 +510,10 @@ class BaseImport(ImportBaseClass):
                 else:
                     no_action += 1
 
-        print "[%s] Processed: %s, Created: %s, Skipped: %s, No action: %s" % (self.Meta.master,self.Meta.queryset.count(),self.created, skipped, no_action)
+        if pbar:
+            pbar.finish()
+            
+        print "%s | Processed: %s, Created: %s, Skipped: %s, No action: %s" % (self.Meta.master,self.Meta.queryset.count(),self.created, skipped, no_action)
         log.debug("Processed: %s, Created: %s" % (self.Meta.queryset.count(),self.created))
         self.created = 0 
 
