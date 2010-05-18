@@ -17,8 +17,3 @@ things later on
 6) Run your conversions:
 
 >>>python manage.py convert ClassName
-
-TODO:
-
-- Add multi-db support so you can define a 'legacy' database instead
-of copying it into the current one.
